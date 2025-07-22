@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import Movements from './movements.js';
+import blockchain from './Web3.js';
 
 // Declaration  of a new scene with Three.js
 const scene = new THREE.Scene();
@@ -39,7 +40,7 @@ scene.add(cone);
 // Geometric figure to be represented in the Metaverse: Cylinder
 const geometry_cylinder = new THREE.CylinderGeometry(5, 5, 5, 32);
 const material_cylinder = new THREE.MeshPhongMaterial({ color: 0x0000ff });
-const cylinder = new THREE.Mesh(geometry_cylinder, material_cylinder); scene.add(cylinder);
+const cylinder = new THREE.Mesh(geometry_cylinder, material_cylinder);
 cylinder.position.set(20, 5, 0);
 scene.add(cylinder);
 
@@ -80,4 +81,20 @@ function animate() {
 
 }
 
-animate()
+animate();
+
+blockchain.then((result) => {
+    // For each building paid for in the Smart Contract,
+    // a graphical representation is made in the Metaverse
+    result.allBuildings.forEach((building, index) => {
+        if (index <= result.totalSupply) {
+            // Representation of NFT Tokens as boxes
+            const boxGeometry = new THREE.BoxGeometry(building.w, building.h, building.d);
+            const boxMaterial = new THREE.MeshPhongMaterial({ color: 0x33fffc });
+            const nft = new THREE.Mesh(boxGeometry, boxMaterial);
+            nft.position.set(building.x, building.y, building.z);
+            scene.add(nft);
+        }
+    });
+
+});
